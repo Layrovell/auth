@@ -1,0 +1,44 @@
+.register-form {
+  max-width: 300px;
+  margin: 10px auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: -1px 1px 8px 0px rgba(34, 60, 80, 0.2);
+}
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="email"] {
+  border: none;
+  padding: 10px;
+  width: 100%;
+  margin-top: 20px;
+  outline: 1px dashed lightblue;
+}
+
+.btn {
+  cursor: pointer;
+  outline: none;
+  display: block;
+  padding: 10px;
+  //background-color: lightblue;
+  //border-radius: 5px;
+  margin: 10px auto;
+  //box-shadow: -1px 1px 8px 0px rgba(34, 60, 80, 0.2);
+}
+
+.btn:hover {
+  background-color: #dbdbdb;
+}
+
+.title {
+  text-align: center;
+  font-size: 1.5em;
+  padding-bottom: 20px;
+}
+
+.error-text {
+  font-size: 12px;
+  color: red;
+}
