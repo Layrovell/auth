@@ -38,31 +38,7 @@ export const Form = () => {
     const validPassword = rePassword.test(password);
     const validRepeatPassword = password === repeatPassword;
 
-    const blurHandler = (e) => {
-        switch (e.target.name) {
-            case 'name':
-                nameHandler(e);
-                break;
-            case 'surname':
-                surnameHandler(e);
-                break;
-            case 'email':
-                emailHandler(e);
-                break;
-            case 'date':
-                dateHandler(e);
-                break;
-            case 'login':
-                loginHandler(e);
-                break;
-            case 'password':
-                passwordHandler(e);
-                break;
-            case 'repeatPassword':
-                repeatPasswordHandler(e);
-                break;
-        }
-    }
+    const isValid = validName && validSurname && validEmail && (limit <= currentAge) && validLogin && validPassword && validRepeatPassword;
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -75,14 +51,18 @@ export const Form = () => {
         passwordHandler();
         repeatPasswordHandler();
 
-        setFormValid(validName && validSurname && validEmail && (limit <= currentAge) && validLogin && validPassword && validRepeatPassword);
-
-        if (formValid) {
+        if (isValid) {
             setFormValidMessage('Регистрация прошла успешно!');
         } else {
             setFormValidMessage('Не все поля заполнены верно!')
         }
     }
+
+    // console.log(formValid);
+
+    useEffect(() => {
+        setFormValidMessage('');
+    }, [isValid]);
 
     const nameHandler = () => {
         if (!name.length) {
@@ -201,123 +181,115 @@ export const Form = () => {
     return (
         <div className="App">
             <form onSubmit={handleSubmit} className='register-form'>
-                <label htmlFor='firstName'>First Name</label>
+
+                <label>First Name
                     <input
                         value={name}
-                        onBlur={(e) => blurHandler(e)}
+                        onBlur={(e) => nameHandler(e)}
                         onChange={(e) => {
                             setName(e.target.value);
                             nameHandler();
                         }}
                         type="text"
                         placeholder="John"
-                        name="name"
-                        id="firstName"
                         className={`input ${nameErrorMessage ? 'input-error' : ''}`}
-                        // autoComplete='off'
                     />
+                </label>
                 {nameErrorMessage && <div className="error-message">{nameErrorMessage}</div>}
 
-                <label htmlFor="lastName">Last Name</label>
+                <label>Last Name
                     <input
                         value={surname}
-                        onBlur={(e) => blurHandler(e)}
+                        onBlur={(e) => surnameHandler(e)}
                         onChange={(e) => {
                             setSurname(e.target.value);
                             surnameHandler();
                         }}
                         className={`input ${surnameErrorMessage ? 'input-error' : ''}`}
                         type="text"
-                        id="lastName"
                         placeholder="Doe"
-                        name="surname"
                     />
+                </label>
                 {surnameErrorMessage && <div className="error-message">{surnameErrorMessage}</div>}
 
-                <label htmlFor="email">Email</label>
-                <input
-                    value={email}
-                    onBlur={(e) => blurHandler(e)}
-                    onChange={(e) => {
-                        setEmail(e.target.value);
-                        emailHandler();
-                    }}
-                    type="text"
-                    placeholder="john.doe@gmail.com"
-                    name="email"
-                    id="email"
-                    className={`input ${emailErrorMessage ? 'input-error' : ''}`}
-                />
+                <label>Email
+                    <input
+                        value={email}
+                        onBlur={(e) => emailHandler(e)}
+                        onChange={(e) => {
+                            setEmail(e.target.value);
+                            emailHandler();
+                        }}
+                        type="text"
+                        id="email"
+                        placeholder="john.doe@gmail.com"
+                        className={`input ${emailErrorMessage ? 'input-error' : ''}`}
+                    />
+                </label>
                 {emailErrorMessage && <div className="error-message">{emailErrorMessage}</div>}
 
-                <label htmlFor="dateBirth">Date of birth</label>
-                <input
-                    value={date}
-                    onBlur={(e) => blurHandler(e)}
-                    onChange={(e) => {
-                        setDate(e.target.value);
-                        dateHandler();
-                    }}
-                    type="date"
-                    name="date"
-                    id='dateBirth'
-                    className={`input ${dateErrorMessage ? 'input-error' : ''}`}
-                />
+                <label>Date of birth
+                    <input
+                        value={date}
+                        onBlur={(e) => dateHandler(e)}
+                        onChange={(e) => {
+                            setDate(e.target.value);
+                            dateHandler();
+                        }}
+                        type="date"
+                        className={`input ${dateErrorMessage ? 'input-error' : ''}`}
+                    />
+                </label>
                 {dateErrorMessage && <div className="error-message">{dateErrorMessage}</div>}
 
-                <label htmlFor="login">Login</label>
-                <input
-                    value={login}
-                    onBlur={(e) => blurHandler(e)}
-                    onChange={(e) => {
-                        setLogin(e.target.value);
-                        loginHandler();
-                    }}
-                    type="text"
-                    placeholder="Login"
-                    name="login"
-                    id='login'
-                    className={`input ${loginErrorMessage ? 'input-error' : ''}`}
-                />
+                <label>Login
+                    <input
+                        value={login}
+                        onBlur={(e) => loginHandler(e)}
+                        onChange={(e) => {
+                            setLogin(e.target.value);
+                            loginHandler();
+                        }}
+                        type="text"
+                        placeholder="JohnD"
+                        className={`input ${loginErrorMessage ? 'input-error' : ''}`}
+                    />
+                </label>
                 {loginErrorMessage && <div className="error-message">{loginErrorMessage}</div>}
 
-                <label htmlFor="pass">Password</label>
-                <input
-                    value={password}
-                    onBlur={(e) => blurHandler(e)}
-                    onChange={(e) => {
-                        setPassword(e.target.value);
-                        passwordHandler();
-                    }}
-                    type="password"
-                    placeholder="Password"
-                    name="password"
-                    id="pass"
-                    className={`input ${passwordErrorMessage ? 'input-error' : ''}`}
-                />
+                <label>Password
+                    <input
+                        value={password}
+                        onBlur={(e) => passwordHandler(e)}
+                        onChange={(e) => {
+                            setPassword(e.target.value);
+                            passwordHandler();
+                        }}
+                        type="password"
+                        placeholder="Password"
+                        className={`input ${passwordErrorMessage ? 'input-error' : ''}`}
+                    />
+                </label>
                 {passwordErrorMessage && <div className="error-message">{passwordErrorMessage}</div>}
 
-                <label htmlFor="repeatPass">Repeat password</label>
-                <input
-                    onBlur={(e) => blurHandler(e)}
-                    value={repeatPassword}
-                    onChange={(e) => {
-                        setRepeatPassword(e.target.value);
-                        repeatPasswordHandler();
-                    }}
-                    type="password"
-                    placeholder="Repeat password"
-                    name="repeatPassword"
-                    id="repeatPass"
-                    className={`input ${repeatPasswordErrorMessage ? 'input-error' : 'input'}`}
-                />
+                <label>Repeat password
+                    <input
+                        onBlur={(e) => repeatPasswordHandler(e)}
+                        value={repeatPassword}
+                        onChange={(e) => {
+                            setRepeatPassword(e.target.value);
+                            repeatPasswordHandler();
+                        }}
+                        type="password"
+                        placeholder="Repeat password"
+                        className={`input ${repeatPasswordErrorMessage ? 'input-error' : 'input'}`}
+                    />
+                </label>
                 {repeatPasswordErrorMessage && <div className="error-message">{repeatPasswordErrorMessage}</div>}
 
                 <button type='submit' className="btn">Register</button>
                 {formValidMessage && (
-                    <div
-                        className={`${formValid ? 'success-form' : 'error-form'}`}
-                    >
+                    <div className={`${isValid ? 'success-form' : 'error-form'}`}>
                         {formValidMessage}
                     </div>
                 )}
