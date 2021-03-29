@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {
     reName,
     reSurname,
@@ -94,6 +94,12 @@ export const Form = () => {
         }
     }
 
+    useEffect(() => {
+        if (name) {
+            nameHandler();
+        }
+    }, [name, nameHandler]);
+
     const surnameHandler = () => {
         if (!surname.length) {
             setSurnameErrorMessage('Фамилия не может быть пустой');
@@ -103,6 +109,12 @@ export const Form = () => {
             setSurnameErrorMessage('');
         }
     }
+
+    useEffect(() => {
+        if (surname) {
+            surnameHandler();
+        }
+    }, [surname, surnameHandler]);
 
     const emailHandler = () => {
         if (!email.length) {
@@ -114,6 +126,12 @@ export const Form = () => {
         }
     }
 
+    useEffect(() => {
+        if (email) {
+            emailHandler();
+        }
+    }, [email, emailHandler]);
+
     const dateHandler = () => {
         if (!date.length) {
             setDateErrorMessage('Дата не может быть пустой!');
@@ -124,6 +142,12 @@ export const Form = () => {
         }
     }
 
+    useEffect(() => {
+        if (date) {
+            dateHandler();
+        }
+    }, [date, dateHandler]);
+
     const loginHandler = () => {
         if (!login.length) {
             setLoginErrorMessage('Логин не может быть пустым!');
@@ -133,6 +157,12 @@ export const Form = () => {
             setLoginErrorMessage('');
         }
     }
+
+    useEffect(() => {
+        if (login) {
+            loginHandler();
+        }
+    }, [login, loginHandler]);
 
     const passwordHandler = () => {
         if (!password.length) {
@@ -146,6 +176,12 @@ export const Form = () => {
         }
     }
 
+    useEffect(() => {
+        if (password) {
+            passwordHandler();
+        }
+    }, [password, passwordHandler]);
+
     const repeatPasswordHandler = () => {
         if (!repeatPassword.length) {
             setRepeatPasswordErrorMessage('Повторите пароль!');
@@ -155,6 +191,12 @@ export const Form = () => {
             setRepeatPasswordErrorMessage('');
         }
     }
+
+    useEffect(() => {
+        if (repeatPassword) {
+            repeatPasswordHandler();
+        }
+    }, [repeatPassword, repeatPasswordHandler]);
 
     return (
         <div className="App">
@@ -172,7 +214,7 @@ export const Form = () => {
                         name="name"
                         id="firstName"
                         className={`input ${nameErrorMessage ? 'input-error' : ''}`}
-                        autoComplete={'off'}
+                        // autoComplete='off'
                     />
                 {nameErrorMessage && <div className="error-message">{nameErrorMessage}</div>}
 
