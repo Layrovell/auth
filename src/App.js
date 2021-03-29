@@ -1,6 +1,15 @@
 import React, {useState, useEffect} from "react";
 import './App.scss';
 import './styles/reset.scss';
+import {
+  reName,
+  reSurname,
+  reEmail,
+  limit,
+  dateNow,
+  reLogin,
+  rePassword
+} from "./helpers/helpers";
 
 function App() {
   const [name, setName] = useState('');
@@ -11,7 +20,7 @@ function App() {
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
 
-  const [nameErrorMessage, setNameErrorMessage] = useState('Имя не может быть пустым!');
+  const [nameErrorMessage, setNameErrorMessage] = useState('');
   const [surnameErrorMessage, setSurnameErrorMessage] = useState('Фамилия не может быть пустой!');
   const [emailErrorMessage, setEmailErrorMessage] = useState('Почта не может быть пустой!');
   const [dateErrorMessage, setDateErrorMessage] = useState('Дата не может быть пустой!');
@@ -30,22 +39,91 @@ function App() {
   const [formValid, setFormValid] = useState(false);
   const [formValidMessage, setFormValidMessage] = useState('');
 
-  const validationForm = () => {
-    // validation for name
-    const reName = /^[a-zA-Z\u00C0-\u00ff]+$/;
-    const validName = reName.test(name);
-
-    if (!name.length) {
+  useEffect(() => {
+    setNameError(false);
+    if (!name) {
       setNameError(true);
-    } else if (!validName) {
-      setNameErrorMessage('Некоректное имя');
+      setNameErrorMessage('Имя не может быть пустым!')
+    } else if (!reName.test(name)) {
+      setNameError(true);
+      setNameErrorMessage('Некорректное имя!')
     } else {
-      setNameErrorMessage('');
+      setNameError(false);
     }
+  }, [name]);
 
-    // validation for surname
-    const reSurname = /^[a-zA-Z\u00C0-\u00ff]+$/;
-    const validSurname = reSurname.test(surname);
+
+  const validName = reName.test(name);
+  const validSurname = reSurname.test(surname);
+  const validEmail = reEmail.test(email);
+  let currentAge = (new Date(dateNow).getTime() - new Date(date).getTime()) / 1000 / 60 / 60 / 24;
+  currentAge = Math.round(currentAge / 365);
+  const validLogin = reLogin.test(login);
+  const validPassword = rePassword.test(password);
+  const validRepeatPassword = password === repeatPassword;
+
+
+  const blurHandler = (e) => {
+    switch (e.target.name) {
+      case 'name':
+        // nameHandler(e);
+        // setNameError(true);
+        break;
+      case 'surname':
+        surnameHandler(e);
+        setSurnameError(true);
+        break;
+      case 'email':
+        emailHandler(e);
+        setEmailError(true);
+        break;
+      case 'date':
+        dateHandler(e);
+        setDateError(true);
+        break;
+      case 'login':
+        loginHandler(e);
+        setLoginError(true);
+        break;
+      case 'password':
+        passwordHandler(e);
+        setPasswordError(true);
+        break;
+      case 'repeatPassword':
+        repeatPasswordHandler(e);
+        setRepeatPasswordError(true);
+        break;
+    }
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    setFormValid(validName && validSurname && validEmail && (limit <= currentAge) && validLogin && validPassword && validRepeatPassword);
+
+    if (formValid) {
+      setFormValidMessage('Success!');
+      setFormValidMessage('');
+    } else {
+      setFormValidMessage('not all field are correct!')
+    }
+  }
+
+  const nameHandler = (e) => {
+    setName(e.target.value || e);
+
+    // if (!name.length) {
+    //   setNameError(true);
+    //   setNameErrorMessage('Имя не может быть пустым')
+    // } else if (!validName) {
+    //   setNameErrorMessage('Некоректное имя');
+    // } else {
+    //   setNameErrorMessage('');
+    // }
+  }
+
+  const surnameHandler = (e) => {
+    setSurname(e.target.value);
 
     if (!surname.length) {
       setSurnameError(true);
@@ -54,10 +132,10 @@ function App() {
     } else {
       setSurnameErrorMessage('');
     }
+  }
 
-    // validation for email
-    const reEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    const validEmail = reEmail.test(email);
+  const emailHandler = (e) => {
+    setEmail(e.target.value);
 
     if (!email.length) {
       setEmailError(true);
@@ -66,12 +144,10 @@ function App() {
     } else {
       setEmailErrorMessage('');
     }
+  }
 
-    // validation for date
-    const limit = 16;
-    const dateNow = new Date().toISOString().split('T')[0];
-    let currentAge = (new Date(dateNow).getTime() - new Date(date).getTime()) / 1000 / 60 / 60 / 24;
-    currentAge = Math.round(currentAge / 365);
+  const dateHandler = (e) => {
+    setDate(e.target.value);
 
     if (!date.length) {
       setDateError(true);
@@ -80,10 +156,10 @@ function App() {
     } else {
       setDateErrorMessage('');
     }
+  }
 
-    // validation for login
-    const reLogin = /^[0-9a-zA-Z]+$/;
-    const validLogin = reLogin.test(login);
+  const loginHandler = (e) => {
+    setLogin(e.target.value);
 
     if (!login.length) {
       setLoginError(true);
@@ -92,10 +168,10 @@ function App() {
     } else {
       setLoginErrorMessage('');
     }
+  }
 
-    // validation for password
-    const rePassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/;
-    const validPassword = rePassword.test(password);
+  const passwordHandler = (e) => {
+    setPassword(e.target.value);
 
     if (!password.length) {
       setPasswordError(true);
@@ -106,9 +182,11 @@ function App() {
     } else {
       setPasswordErrorMessage('');
     }
+  }
 
-    // validation for repeat password
-    const validRepeatPassword = password === repeatPassword;
+  const repeatPasswordHandler = (e) => {
+    setRepeatPassword(e.target.value);
+
     if (!repeatPassword.length) {
       setRepeatPasswordError(true);
     } else if (password !== repeatPassword) {
@@ -116,120 +194,6 @@ function App() {
     } else {
       setRepeatPasswordErrorMessage('');
     }
-
-    if (validName && validSurname && validEmail && (limit <= currentAge) && validLogin && validPassword && validRepeatPassword) {
-      setFormValid(true);
-      setFormValidMessage('Success!');
-      console.log('Success');
-    } else {
-      setFormValidMessage('not all field are correct!')
-    }
-  }
-
-  const blurHandler = (e) => {
-    switch (e.target.name) {
-      case 'name':
-        const reName = /^[a-zA-Z\u00C0-\u00ff]+$/;
-        const validName = reName.test(name);
-
-        if (!name.length) {
-          setNameError(true);
-          setNameErrorMessage('Имя не может быть пустым')
-        } else if (!validName) {
-          setNameErrorMessage('Некоректное имя');
-        } else {
-          setNameErrorMessage('');
-        }
-        setNameError(true);
-        break;
-
-      case 'surname':
-        const reSurname = /^[a-zA-Z\u00C0-\u00ff]+$/;
-        const validSurname = reSurname.test(surname);
-
-        if (!surname.length) {
-          setSurnameError(true);
-        } else if (!validSurname) {
-          setSurnameErrorMessage('Некоректная фамилия');
-        } else {
-          setSurnameErrorMessage('');
-        }
-        setSurnameError(true);
-        break;
-
-      case 'email':
-        const reEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        const validEmail = reEmail.test(email);
-
-        if (!email.length) {
-          setEmailError(true);
-        } else if (!validEmail) {
-          setEmailErrorMessage('Недопустимый формат почты');
-        } else {
-          setEmailErrorMessage('');
-        }
-        setEmailError(true);
-        break;
-      case 'date':
-        const limit = 16;
-        const dateNow = new Date().toISOString().split('T')[0];
-        let currentAge = (new Date(dateNow).getTime() - new Date(date).getTime()) / 1000 / 60 / 60 / 24;
-        currentAge = Math.round(currentAge / 365);
-
-        if (!date.length) {
-          setDateError(true);
-        } else if (currentAge < limit) {
-          setDateErrorMessage('Возраст пользователя меньше 16');
-        } else {
-          setDateErrorMessage('');
-        }
-        setDateError(true);
-        break;
-      case 'login':
-        const reLogin = /^[0-9a-zA-Z]+$/;
-        const validLogin = reLogin.test(login);
-
-        if (!login.length) {
-          setLoginError(true);
-        } else if (!validLogin) {
-          setLoginErrorMessage('Недопустимый формат логина');
-        } else {
-          setLoginErrorMessage('');
-        }
-        setLoginError(true);
-        break;
-      case 'password':
-        const rePassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/;
-        const validPassword = rePassword.test(password);
-
-        if (!password.length) {
-          setPasswordError(true);
-        } else if (!validPassword) {
-          setPasswordErrorMessage('Неправильный формат пароля');
-        } else if (password.length < 6) {
-          setPasswordErrorMessage('Пароль не должен быть менее 6 символов');
-        } else {
-          setPasswordErrorMessage('');
-        }
-        setPasswordError(true);
-        break;
-      case 'repeatPassword':
-        if (!repeatPassword.length) {
-          setRepeatPasswordError(true);
-        } else if (password !== repeatPassword) {
-          setRepeatPasswordErrorMessage('Пароль введен не верно!');
-        } else {
-          setRepeatPasswordErrorMessage('');
-        }
-        setRepeatPasswordError(true);
-        break;
-    }
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    validationForm();
   }
 
   return (
@@ -239,14 +203,12 @@ function App() {
         <input
           value={name}
           onBlur={(e) => blurHandler(e)}
-          onChange={(e) => {
-            setNameError(false);
-            setName(e.target.value)
-          }}
+          onChange={(e) => nameHandler(e)}
           type="text"
           placeholder="Name"
           name="name"
           className={nameError ? 'warn' : 'test'}
+          autoComplete={'off'}
         />
         {(nameError && nameErrorMessage &&
           <div className="error-message">{nameErrorMessage}</div>)}
@@ -254,7 +216,7 @@ function App() {
         <input
           value={surname}
           onBlur={(e) => blurHandler(e)}
-          onChange={(e) => setSurname(e.target.value)}
+          onChange={(e) => surnameHandler(e)}
           type="text"
           placeholder="Surname"
           name="surname"
@@ -265,7 +227,7 @@ function App() {
         <input
           value={email}
           onBlur={(e) => blurHandler(e)}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => emailHandler(e)}
           type="text"
           placeholder="Email"
           name="email"
@@ -276,7 +238,7 @@ function App() {
         <input
           value={date}
           onBlur={(e) => blurHandler(e)}
-          onChange={(e) => setDate(e.target.value)}
+          onChange={(e) => dateHandler(e)}
           type="date"
           name="date"
         />
@@ -286,7 +248,7 @@ function App() {
         <input
           value={login}
           onBlur={(e) => blurHandler(e)}
-          onChange={(e) => setLogin(e.target.value)}
+          onChange={(e) => loginHandler(e)}
           type="text"
           placeholder="Login"
           name="login"
@@ -297,7 +259,7 @@ function App() {
         <input
           value={password}
           onBlur={(e) => blurHandler(e)}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => passwordHandler(e)}
           type="password"
           placeholder="Password"
           name="password"
@@ -308,7 +270,7 @@ function App() {
         <input
           onBlur={(e) => blurHandler(e)}
           value={repeatPassword}
-          onChange={(e) => setRepeatPassword(e.target.value)}
+          onChange={(e) => repeatPasswordHandler(e)}
           type="password"
           placeholder="Repeat Password"
           name="repeatPassword"
